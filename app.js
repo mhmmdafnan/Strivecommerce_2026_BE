@@ -1101,7 +1101,7 @@ app.post(
       const userId = req.user.id;
       // console.log("BODY:", req.body);
       // console.log("FILES:", req.files);
-
+      const reversedProduct = req.files.slice().reverse();
       // Simpan produk dulu dengan path kosong
       const product = await prisma.product.create({
         data: {
@@ -1125,14 +1125,17 @@ app.post(
       }
 
       let fileUtamaPath = [];
-      req.files.forEach((file, i) => {
-        const ext = path.extname(file.originalname).toLowerCase();
-        // Filter ekstensi
-        const finalFileName = `${i}${ext}`;
-        const finalPath = `${folderFinal}/${finalFileName}`;
-        fs.renameSync(file.path, finalPath);
-        fileUtamaPath.push(`/${finalPath}`);
-      });
+      if (reversedProduct) {
+        for (let index = 0; index < reversedProduct.length; index++) {
+          const file = reversedProduct[index];
+          const ext = path.extname(file.originalname).toLowerCase();
+          // Filter ekstensi
+          const finalFileName = `${index}${ext}`;
+          const finalPath = `${folderFinal}/${finalFileName}`;
+          fs.renameSync(file.path, finalPath);
+          fileUtamaPath.push(`/${finalPath}`);
+        }
+      }
 
       // Update path gambar utama
       const updatedProduct = await prisma.product.update({
@@ -1172,10 +1175,24 @@ app.delete("/api/v1/product/:id", authenticateToko, async (req, res) => {
       });
     }
 
-    // Hapus produk
+    // Hapus produk di DB
     await prisma.product.delete({
       where: { id: parseInt(id) },
     });
+
+    const filePaths = JSON.parse(existingProduct.path || "[]");
+    // Hapus semua file di BE
+    filePaths.forEach((fileRelPath) => {
+      const fullPath = path.join(__dirname, fileRelPath);
+      if (fs.existsSync(fullPath)) {
+        fs.unlinkSync(fullPath);
+      }
+    });
+    // Hapus folder dan semua isinya
+    const folderPath = path.join(__dirname, `img/product/${id}`);
+    if (fs.existsSync(folderPath)) {
+      fs.rmSync(folderPath, { recursive: true, force: true }); // Gunakan fs.rmSync, bukan fs.rmdirSync
+    }
 
     return res.status(200).json({
       success: true,
