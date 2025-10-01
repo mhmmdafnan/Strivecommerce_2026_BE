@@ -710,6 +710,7 @@ app.get("/api/v1/toko/:id", async (req, res) => {
         nama_toko: true,
         klasifikasi_toko: true,
         rating_toko: true,
+        telp: true,
         alamat: {
           where: {
             AND: [{ is_toko: 1 }, { is_default: 1 }],
