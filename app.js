@@ -1406,7 +1406,7 @@ app.patch("/api/v1/users/:id", authenticateToko, async (req, res) => {
         lastName,
         telp : telepon,
         nama_toko,
-        gender : jenisKelamin,
+        gender : parseInt(jenisKelamin),
       },
     });
 
