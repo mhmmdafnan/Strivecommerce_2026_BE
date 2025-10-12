@@ -17,8 +17,8 @@ const prisma = new PrismaClient();
 const port = 3001;
 
 // agar API bisa dia kses
-const cors = require("cors");
-// const cors = require('cors');
+// const cors = require("cors");
+const cors = require('cors');
 app.use(
   cors({
     origin: "http://localhost:5173", // hanya FE kamu yang boleh akses
@@ -141,7 +141,7 @@ function authenticateToko(req, res, next) {
         message: "Forbidden",
       }); // Forbidden
     req.user = user;
-    if (user.buka_toko === 1) {
+    if (user.buka_toko == 1) {
       next();
     } else {
       return res.status(403).json({
@@ -1384,7 +1384,7 @@ app.patch("/api/v1/users/:id", authenticateToko, async (req, res) => {
     console.log(req.body);
 
     const { id } = req.params;
-    const { firstName, lastName, telp, nama_toko, gender } = req.body;
+    const { firstName, lastName, telepon, nama_toko, jenisKelamin } = req.body;
 
     // Cek apakah user ada
     const existingUser = await prisma.users.findUnique({
@@ -1404,9 +1404,9 @@ app.patch("/api/v1/users/:id", authenticateToko, async (req, res) => {
       data: {
         firstName,
         lastName,
-        telp,
+        telp : telepon,
         nama_toko,
-        gender,
+        gender : jenisKelamin,
       },
     });
 
