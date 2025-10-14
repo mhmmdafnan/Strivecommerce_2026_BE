@@ -18,7 +18,7 @@ const port = 3001;
 
 // agar API bisa dia kses
 // const cors = require("cors");
-const cors = require('cors');
+const cors = require("cors");
 app.use(
   cors({
     origin: "http://localhost:5173", // hanya FE kamu yang boleh akses
@@ -566,6 +566,7 @@ app.get("/api/v1/product/:id", async (req, res) => {
             rating_toko: true,
             telp: true,
             id: true,
+            path_file: true,
           },
         },
         nama: true,
@@ -1404,9 +1405,9 @@ app.patch("/api/v1/users/:id", authenticateToko, async (req, res) => {
       data: {
         firstName,
         lastName,
-        telp : telepon,
+        telp: telepon,
         nama_toko,
-        gender : parseInt(jenisKelamin),
+        gender: parseInt(jenisKelamin),
       },
     });
 
