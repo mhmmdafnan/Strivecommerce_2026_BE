@@ -22,7 +22,7 @@ const cors = require("cors");
 app.use(
   cors({
     origin: "http://localhost:5173", // hanya FE kamu yang boleh akses
-  })
+  }),
 );
 
 const path = require("path");
@@ -401,7 +401,7 @@ app.get("/api/v1/product", async (req, res) => {
     const { total, page, orderBy, keyword, idToko, kategori } = req.query;
 
     const keywordTrimmed = keyword ? keyword.trim() : undefined;
-
+    console.log("Halo");
     let order = {};
     if (orderBy === "harga_desc") {
       order = { harga: "desc" };
@@ -712,20 +712,21 @@ app.get("/api/v1/toko/:id", async (req, res) => {
         klasifikasi_toko: true,
         rating_toko: true,
         telp: true,
-        alamat: {
-          where: {
-            AND: [{ is_toko: 1 }, { is_default: 1 }],
-          },
-          select: {
-            //default alamat
-            id: true,
-            kabupaten: {
-              select: {
-                nama: true,
-              },
-            },
-          },
-        },
+        path_file: true,
+        // alamat: {
+        //   where: {
+        //     AND: [{ is_toko: 1 }, { is_default: 1 }],
+        //   },
+        //   select: {
+        //     //default alamat
+        //     id: true,
+        //     kabupaten: {
+        //       select: {
+        //         nama: true,
+        //       },
+        //     },
+        //   },
+        // },
       },
     });
     // console.log(toko);
@@ -976,7 +977,7 @@ app.post("/api/v1/login", async (req, res) => {
     } else {
       const isValidPassword = await bcrypt.compare(
         password,
-        uniqueUser.password
+        uniqueUser.password,
       );
 
       if (isValidPassword) {
@@ -1156,7 +1157,7 @@ app.post(
         error: err.message,
       });
     }
-  }
+  },
 );
 
 // DELETE API
@@ -1377,7 +1378,7 @@ app.patch(
         error: error.message,
       });
     }
-  }
+  },
 );
 
 app.patch("/api/v1/users/:id", authenticateToko, async (req, res) => {
@@ -1450,7 +1451,7 @@ app.patch(
         const oldImagePath = path.join(
           __dirname,
           "img/profile_image", // folder tempat gambar disimpan
-          user.path_file
+          user.path_file,
         );
 
         // Cek apakah file ada dulu sebelum dihapus
@@ -1479,7 +1480,7 @@ app.patch(
         message: "Terjadi kesalahan saat update gambar",
       });
     }
-  }
+  },
 );
 
 app.patch("/api/v1/users/password/:id", async (req, res) => {
